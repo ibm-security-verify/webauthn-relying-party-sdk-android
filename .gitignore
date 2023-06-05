@@ -24,6 +24,5 @@ replay_pid*
 .gradle
 **/.idea
 local.properties
-gradle.properties
 RelyingPartySdk/build
 .DS_Store
