@@ -1,5 +1,5 @@
 /*
- * Copyright contributors to the IBM Security Verify Relying Party SDK for Android project
+ * Copyright contributors to the IBM Security Verify WebAuthn Relying Party SDK for Android
  */
 
 package com.ibm.security.relyingpartysdk.model
