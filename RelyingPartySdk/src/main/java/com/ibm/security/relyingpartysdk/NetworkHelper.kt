@@ -21,7 +21,7 @@ object NetworkHelper {
     private val client = HttpClient(engineFactory = CIO) {
         install(Logging) {
             logger = Logger.ANDROID
-            level = LogLevel.INFO
+            level = LogLevel.BODY
         }
         install(ContentNegotiation) {
             json(Json {
