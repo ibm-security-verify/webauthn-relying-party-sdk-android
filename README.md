@@ -9,7 +9,7 @@ RelyingPartySDK is a lightweight framework that provides the ability for existin
 Go to the [Android Developer Site](https://passkeys.dev/docs/reference/android/) if you like to learn more about developing Passkey-enabled apps.
 
 ### Getting started
-The RelyingPartSDK is available as an APK file [here](https://github.com/ibm-security-verify/webauthn-relying-party-sdk-android/releases).
+The RelyingPartySDK is available as an APK file [here](https://github.com/ibm-security-verify/webauthn-relying-party-sdk-android/releases).
 
 ## Contents
 ### Allowing a user to sign-up
