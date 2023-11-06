@@ -9,22 +9,15 @@ import kotlinx.serialization.Serializable
 
 @Suppress("unused")
 @Serializable
+/**
+ * Represents an access token.
+ */
 data class Token(
-
-    @SerialName("access_token")
-    val accessToken: String,
-
-    @SerialName("token_type")
-    val tokenType: String,
-
-    @SerialName("expires_in")
-    val expiry: Int,
-
-    @SerialName("id_token")
-    val idToken: String? = null
-) {
-
-    fun authorizationHeader(): String {
-        return "$tokenType $accessToken"
-    }
+    @SerialName("access_token") val accessToken: String,
+    @SerialName("token_type") val tokenType: String,
+    @SerialName("expires_in") val expiry: Int,
+    @SerialName("id_token") val idToken: String? = null
+) : AuthenticationMethod {
+    val authorizationHeader: String
+        get() = "$tokenType $accessToken"
 }
