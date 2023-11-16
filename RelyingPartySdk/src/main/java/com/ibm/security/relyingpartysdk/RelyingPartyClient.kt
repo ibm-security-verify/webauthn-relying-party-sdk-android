@@ -11,9 +11,12 @@ import io.ktor.client.call.body
 import io.ktor.client.request.*
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import io.ktor.util.toMap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.net.URL
 import java.util.*
 
@@ -112,7 +115,7 @@ class RelyingPartyClient(private val baseURL: URL) {
         val result = coroutineScope.async {
             try {
                 val result = httpClient.post {
-                    header("Authorization", token?.authorizationHeader())
+                    header("Authorization", token?.authorizationHeader)
                     url("$baseURL".plus("/v1/challenge"))
                     contentType(ContentType.Application.Json)
                     setBody(ChallengeRequest(displayName, "attestation"))
@@ -142,7 +145,7 @@ class RelyingPartyClient(private val baseURL: URL) {
         val result = coroutineScope.async {
             try {
                 val result = httpClient.post {
-                    header("Authorization", token?.authorizationHeader())
+                    header("Authorization", token?.authorizationHeader)
                     url("$baseURL".plus("/v1/challenge"))
                     contentType(ContentType.Application.Json)
                     setBody(ChallengeRequest(displayName, "assertion"))
@@ -185,7 +188,7 @@ class RelyingPartyClient(private val baseURL: URL) {
         val result = coroutineScope.async {
             try {
                 val result = httpClient.post {
-                    header("Authorization", token.authorizationHeader())
+                    header("Authorization", token.authorizationHeader)
                     url("$baseURL".plus("/v1/register"))
                     contentType(ContentType.Application.Json)
                     setBody(registration)
@@ -209,13 +212,13 @@ class RelyingPartyClient(private val baseURL: URL) {
      *
      * @return A [Token] representing an authenticated user.
      */
-    suspend fun signing(
+    suspend fun signin(
         signature: String,
         clientDataJson: String,
         authenticatorData: String,
         credentialId: String,
         userId: String
-    ): Result<Token> {
+    ): Result<AuthenticationMethod> {
 
         val verification = FIDO2Verification(
             clientDataJson,
@@ -227,11 +230,42 @@ class RelyingPartyClient(private val baseURL: URL) {
 
         val result = coroutineScope.async {
             try {
-                val result = httpClient.post {
+                lateinit var result: AuthenticationMethod
+
+                val httpResponse = httpClient.post {
                     url("$baseURL".plus("/v1/signin"))
                     contentType(ContentType.Application.Json)
                     setBody(verification)
-                }.body<Token>()
+                }
+
+                val headers = httpResponse.headers.toMap()
+                val responseBody = httpResponse.body<String>()
+
+                /*  Check the presence of keys to determine what type is expected.
+
+                    Passing a `reified` generic into this function with does not work here,
+                    because then other classes (e.g. `FIDO2Verification`) would have to be
+                    exposed because of the then-required `inline`.
+                 */
+                if (responseBody.contains("access_token") &&
+                    responseBody.contains("token_type") &&
+                    responseBody.contains(
+                        "expires_in"
+                    )
+                ) {
+                    result = Json.decodeFromString<Token>(responseBody)
+                } else {
+                    val values = HashMap<String, String>()
+                    for (cookie in headers["Set-Cookie"] ?: emptyList()) {
+                        val parts = cookie.trim().split("=")
+                        if (parts.size == 2) {
+                            values[parts[0]] = parts[1]
+                        }
+                    }
+                    val data = Json.encodeToString(values)
+                    result = Json.decodeFromString<Cookies>(data)
+                }
+
                 Result.success(result)
             } catch (e: Throwable) {
                 Result.failure(e)

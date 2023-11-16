@@ -139,7 +139,7 @@ class RelyingPartyClientTest {
     @Test
     fun test_signin() = runTest {
         RelyingPartyClient(URL(serverUrl))
-            .signing(
+            .signin(
                 signature = "", clientDataJson = "", authenticatorData = "",
                 credentialId = "", userId = "userId"
             )
