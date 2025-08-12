@@ -1,8 +1,8 @@
-# IBM Security Verify Relying Party SDK for Android
+# IBM Verify Relying Party SDK for Android
 
 ## Overview
 
-The IBM Security Verify Relying Party SDK for Android is the client-side companion to [IBM Security Verify Relying Party Server](https://github.com/ibm-security-verify/webauthn-relying-party-server-swift) which exposes REST API's hosted in a Docker image.
+The IBM Verify Relying Party SDK for Android is the client-side companion to [IBM Verify Relying Party Server](https://github.com/ibm-security-verify/webauthn-relying-party-server-swift) which exposes REST API's hosted in a Docker image.
 
 RelyingPartySDK is a lightweight framework that provides the ability for existing users to register their device with Passkey and subsequently sign-in without a password and for new users to sign-up and validate their account.
 
