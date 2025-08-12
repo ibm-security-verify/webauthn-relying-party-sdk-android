@@ -30,7 +30,7 @@ jobs:
       run: ./gradlew --no-daemon dokkaHtml build
 
     - name: Store build artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: build artifcats
         path: |
@@ -38,7 +38,7 @@ jobs:
             ./RelyingPartySdk/build/outputs/aar/RelyingPartySdk-*.aar
 
     - name: Store documentation
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: documentation
         path: ./RelyingPartySdk/build/dokka/html/  
